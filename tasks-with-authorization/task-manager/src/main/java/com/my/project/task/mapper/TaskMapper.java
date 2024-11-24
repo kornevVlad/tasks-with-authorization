@@ -1,11 +1,14 @@
 package com.my.project.task.mapper;
 
+import com.my.project.comment.dto.ResponseCommentDto;
 import com.my.project.task.dto.NewTaskDto;
 import com.my.project.task.dto.TaskDto;
 import com.my.project.task.model.Task;
 import com.my.project.task.status.StatusTask;
 import com.my.project.user.model.User;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class TaskMapper {
@@ -20,7 +23,7 @@ public class TaskMapper {
         return task;
     }
 
-    public TaskDto toTaskDto(Task task) {
+    public TaskDto toTaskDto(Task task, List<ResponseCommentDto> commentDtoList) {
         TaskDto taskDto = new TaskDto();
         taskDto.setCommentId(task.getId());
         taskDto.setTaskHeader(task.getTaskHeader());
@@ -31,6 +34,7 @@ public class TaskMapper {
             taskDto.setExecutor(task.getExecutor().getId());
         }
         taskDto.setPriorityStatus(task.getPriorityStatus());
+        taskDto.setCommentDtoList(commentDtoList);
         return taskDto;
     }
 }

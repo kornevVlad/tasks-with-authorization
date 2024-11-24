@@ -1,0 +1,770 @@
+{
+	"info": {
+		"_postman_id": "a59b8967-a8bc-4c02-adea-f3c8beb459a2",
+		"name": "TaskSecurity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18754793",
+		"_collection_link": "https://warped-space-720423.postman.co/workspace/d913e008-19f6-4aa4-b095-da76977d30f8/collection/18754793-a59b8967-a8bc-4c02-adea-f3c8beb459a2?action=share&source=collection_link&creator=18754793"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Создание пользователя",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"Аня\",\r\n    \"email\": \"anna@yandex.ru\",\r\n    \"password\": \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9010/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создание пользователя 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"РИЧ\",\r\n    \"email\": \"rich@yandex.ru\",\r\n    \"password\": \"98765\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9010/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создание пользователя 3",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"Игорь\",\r\n    \"email\": \"Igor@yandex.ru\",\r\n    \"password\": \"Ig12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9010/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Авторизация пользователя получение Jwt",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"vlad@yandex.ru\",\r\n    \"password\" : \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9010/authentication",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"authentication"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление статуса пользователя 2",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Task-User-Id",
+								"value": "2",
+								"type": "text"
+							},
+							{
+								"key": "Token",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJwYXNzd29yZCI6IjEyMzQ1Iiwic3ViIjoidmxhZEB5YW5kZXgucnUiLCJpYXQiOjE3MzIyNzY5NjcsImV4cCI6MTczMjI3ODc2N30.PamLtv7jMQVFTmjY5iLySWAxxNL-I168Y8-XY8v2y2c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/users/update/:role",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"users",
+								"update",
+								":role"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "role",
+									"value": "ADMIN"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Список пользователей",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Token",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJwYXNzd29yZCI6IjEyMzQ1Iiwic3ViIjoidmxhZEB5YW5kZXgucnUiLCJpYXQiOjE3MzIyNzY5NjcsImV4cCI6MTczMjI3ODc2N30.PamLtv7jMQVFTmjY5iLySWAxxNL-I168Y8-XY8v2y2c",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/users/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"users",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Создание задачи",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Token",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInBhc3N3b3JkIjoiMTIzNDUiLCJzdWIiOiJhbm5hQHlhbmRleC5ydSIsImlhdCI6MTczMjI4MTY0MywiZXhwIjoxNzMyMjk5NjQzfQ.SW8f7OyTswZzXemeWB9V2-uC7XALGxvg4AA28b_sHd8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"taskHeader\": \"Трекер задач\",\r\n    \"description\": \"Разработать трекер задач по ТЗ\",\r\n    \"priorityStatus\": \"LOW\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9010/tasks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление задачи",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Token",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInBhc3N3b3JkIjoiMTIzNDUiLCJzdWIiOiJhbm5hQHlhbmRleC5ydSIsImlhdCI6MTczMjI4MTY0MywiZXhwIjoxNzMyMjk5NjQzfQ.SW8f7OyTswZzXemeWB9V2-uC7XALGxvg4AA28b_sHd8",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"taskHeader\": \"Обновленный трекер задач\",\r\n      \"description\": \"Разработать трекер задач по ТЗ и добавить тесты\",\r\n      \"priorityStatus\": \"MEDIUM\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9010/tasks/update/:taskId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"update",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Назначение исполнителя задачи",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInBhc3N3b3JkIjoiMTIzNDUiLCJzdWIiOiJhbm5hQHlhbmRleC5ydSIsImlhdCI6MTczMjI4MTY0MywiZXhwIjoxNzMyMjk5NjQzfQ.SW8f7OyTswZzXemeWB9V2-uC7XALGxvg4AA28b_sHd8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/tasks/update/:taskId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"update",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление статуса задачи",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/tasks/updateStatusTask/:statusTask/:taskId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"updateStatusTask",
+								":statusTask",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "statusTask",
+									"value": "COMPLETED"
+								},
+								{
+									"key": "taskId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление приоритета задачи",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJwYXNzd29yZCI6IjEyMzQ1Iiwic3ViIjoiYW5uYUB5YW5kZXgucnUiLCJpYXQiOjE3MzI0NTI3MDQsImV4cCI6MTczMjQ3MDcwNH0.TOZdUsM8wTLK-gy1QJpNM-OgfGmEThYteGtzzPzceH4",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/tasks/updatePriorityTask/:priority/:taskId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"updatePriorityTask",
+								":priority",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "priority",
+									"value": "MEDIUM"
+								},
+								{
+									"key": "taskId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Задача по ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9010/tasks/getId/:taskId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"getId",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Задачи автора",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/tasks/allTaskByAuthorId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"allTaskByAuthorId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Задачи автора пагинация и фильтрация",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/tasks/allTaskByAuthor?status=PENDING&page=2&size=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"allTaskByAuthor"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PENDING"
+								},
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "size",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Задачи исполнителя",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/tasks/allTaskByExecutorId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"allTaskByExecutorId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Задачи исполнителя фильтрация и пагинация",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Список задач только Admin",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/tasks/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Список задач по приоритету",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление задачи",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/tasks/delete/:taskId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"tasks",
+								"delete",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "Создание комментария",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Отличная работа\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9010/comments/:taskId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"comments",
+								":taskId"
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление комментария",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Отличная работа лучше не придумать)))\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9010/comments/update/:commentId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"comments",
+								"update",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "commentId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получение комментариев задачи с пагинацией",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9010/comments/getCommentsByTaskId/:taskId?page=1&size=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"comments",
+								"getCommentsByTaskId",
+								":taskId"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "3"
+								}
+							],
+							"variable": [
+								{
+									"key": "taskId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление комментария",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInBhc3N3b3JkIjoiMTIzNDUiLCJzdWIiOiJhbm5hQHlhbmRleC5ydSIsImlhdCI6MTczMjM1NzAxNywiZXhwIjoxNzMyMzc1MDE3fQ.kMQRWZEtD-EyyP2wJzYYigqFjwkfMeC8nAMNgJlc23k",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:9010/comments/deleteComment/:commentId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9010",
+							"path": [
+								"comments",
+								"deleteComment",
+								":commentId"
+							],
+							"variable": [
+								{
+									"key": "commentId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsInBhc3N3b3JkIjoiMTIzNDUiLCJzdWIiOiJhbm5hQHlhbmRleC5ydSIsImlhdCI6MTczMjI3NjAzNiwiZXhwIjoxNzMyMjc3ODM2fQ.uOTbGHChuJo1p1aMRX0xLxx7ev9qRL1HyFlus5ecs48",
+			"type": "string"
+		}
+	]
+}

@@ -15,9 +15,7 @@ public class CommentMapper {
         responseCommentDto.setId(comment.getId());
         responseCommentDto.setDescription(comment.getDescription());
         responseCommentDto.setTaskId(comment.getTask().getId());
-        responseCommentDto.setHeaderTask(comment.getTask().getTaskHeader());
         responseCommentDto.setUserId(comment.getUser().getId());
-        responseCommentDto.setUserName(comment.getUser().getUserName());
         return responseCommentDto;
     }
 

@@ -1,6 +1,7 @@
 package com.my.project.task.service.impl;
 
 import com.my.project.authentication.utils.JwtTokenUtils;
+import com.my.project.comment.utils.CommentUtils;
 import com.my.project.exception.ValidBedRequest;
 import com.my.project.exception.ValidNotFound;
 import com.my.project.task.dto.NewTaskDto;
@@ -31,12 +32,13 @@ public class TaskServiceImpl implements TaskService {
     private final UserRepository userRepository;
     private final JwtTokenUtils jwtTokenUtils;
     private final TaskMapper taskMapper;
+    private final CommentUtils commentUtils;
 
     @Override
     public TaskDto createTask(String token, NewTaskDto newTaskDto) {
         Task task = taskMapper.toNewTask(newTaskDto, validUser(token));
         taskRepository.save(task);
-        return taskMapper.toTaskDto(task);
+        return taskMapper.toTaskDto(task, commentUtils.getAllCommentDtoByTaskId(task.getId()));
     }
 
     @Override
@@ -52,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
             }
             taskRepository.save(task);
         }
-        return taskMapper.toTaskDto(task);
+        return taskMapper.toTaskDto(task, commentUtils.getAllCommentDtoByTaskId(task.getId()));
     }
 
     @Override
@@ -67,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
                 taskRepository.save(task);
             }
         }
-        return taskMapper.toTaskDto(task);
+        return taskMapper.toTaskDto(task, commentUtils.getAllCommentDtoByTaskId(task.getId()));
     }
 
     @Override
@@ -78,7 +80,7 @@ public class TaskServiceImpl implements TaskService {
             task.setStatusTask(StatusTask.valueOf(statusTask));
             taskRepository.save(task);
         }
-        return taskMapper.toTaskDto(task);
+        return taskMapper.toTaskDto(task, commentUtils.getAllCommentDtoByTaskId(task.getId()));
     }
 
     @Override
@@ -89,7 +91,7 @@ public class TaskServiceImpl implements TaskService {
             task.setPriorityStatus(PriorityStatus.valueOf(priority));
             taskRepository.save(task);
         }
-        return taskMapper.toTaskDto(task);
+        return taskMapper.toTaskDto(task, commentUtils.getAllCommentDtoByTaskId(task.getId()));
     }
 
     @Override
@@ -98,7 +100,7 @@ public class TaskServiceImpl implements TaskService {
         if (task.isEmpty()) {
             throw new ValidNotFound("Задача не найдена");
         }
-        return taskMapper.toTaskDto(task.get());
+        return taskMapper.toTaskDto(task.get(), commentUtils.getAllCommentDtoByTaskId(task.get().getId()));
     }
 
     @Override
@@ -154,7 +156,7 @@ public class TaskServiceImpl implements TaskService {
     private List<TaskDto> generateListTaskDto(List<Task> tasks) {
         List<TaskDto> tasksDto = new ArrayList<>();
         for (Task task : tasks) {
-            tasksDto.add(taskMapper.toTaskDto(task));
+            tasksDto.add(taskMapper.toTaskDto(task, commentUtils.getAllCommentDtoByTaskId(task.getId())));
         }
         return tasksDto;
     }

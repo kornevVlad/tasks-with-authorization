@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   task-service:
@@ -7,10 +7,10 @@ services:
     ports:
       - "9010:9010"
     depends_on:
-      - manager-db
+      - task-db
     environment:
-      - DB_NAME=manager
-      - DB_HOST=manager-db
+      - DB_NAME=tasks
+      - DB_HOST=task-db
       - DB_PORT=5432
       - POSTGRES_USER=manager
       - POSTGRES_PASSWORD=iamroot
@@ -21,7 +21,7 @@ services:
     ports:
       - "5438:5432"
     environment:
-      - POSTGRES_DB=manager
+      - POSTGRES_DB=tasks
       - POSTGRES_USER=manager
       - POSTGRES_PASSWORD=iamroot
     volumes:

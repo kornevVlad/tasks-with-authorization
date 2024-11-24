@@ -28,7 +28,6 @@ public class JwtTokenUtils {
         Date expiredDate = new Date(issuedDate.getTime() + jwtLifeTime.toMillis());
         return Jwts.builder()
                 .claim("role", user.getRole())
-                .claim("password", user.getPassword())
                 .setSubject(user.getEmail())
                 .setIssuedAt(issuedDate)
                 .setExpiration(expiredDate)
@@ -48,13 +47,6 @@ public class JwtTokenUtils {
      */
     public String getRoles(String token) {
         return getAllClaimsFromToken(token).get("role", String.class );
-    }
-
-    /**
-     * password из token
-     */
-    public String getPassword(String token) {
-        return getAllClaimsFromToken(token).get("password", String.class);
     }
 
     /**
