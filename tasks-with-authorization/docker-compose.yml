@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  task-service:
+    build: task-manager
+    container_name: task-service
+    ports:
+      - "9010:9010"
+    depends_on:
+      - manager-db
+    environment:
+      - DB_NAME=manager
+      - DB_HOST=manager-db
+      - DB_PORT=5432
+      - POSTGRES_USER=manager
+      - POSTGRES_PASSWORD=iamroot
+
+  task-db:
+    image: postgres:14-alpine
+    container_name: task-db
+    ports:
+      - "5438:5432"
+    environment:
+      - POSTGRES_DB=manager
+      - POSTGRES_USER=manager
+      - POSTGRES_PASSWORD=iamroot
+    volumes:
+      - ./init/schema.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - /var/lib/postgresql/data/
