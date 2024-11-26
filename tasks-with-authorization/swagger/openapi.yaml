@@ -1,0 +1,236 @@
+openapi: 3.0.0
+info:
+  title: Трекер Задач с авторизацией через Jwt
+  version: 1.0.0
+paths:
+  /users:
+    post:
+      summary: Создание пользователя
+      requestBody:
+        required: true
+        description: Данные пользователя, необходимые для создания новой учетной записи.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUserDto'
+      responses:
+        '200':
+          description: Успешное создание пользователя.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDtoJwt'
+        '400':
+          description: Bad request. Invalid input data.
+        '500':
+          description: Internal server error.
+  /update/{role}:
+    patch:
+      summary: Обновление статуса пользователя. Только админ
+      description: Позволяет администраторам обновлять статус пользователя, указывая его роль.
+      parameters:
+        - name: role
+          in: path
+          required: true
+          description: Новая роль, назначаемая пользователю (USER, ADMIN).
+          schema:
+            type: string
+        - name: Task-User-Id
+          in: header
+          required: true
+          description: Идентификатор пользователя, роль которого обновляется.
+          schema:
+            type: integer
+            format: int64
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен для аутентификации.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Статус пользователя обновлен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          description: Bad request.
+        '401':
+          description: Unauthorized. Token is invalid or missing.
+        '404':
+          description: User not found.
+        '500':
+          description: Internal server error.
+  /users/all:
+    get:
+      summary: Получить доступ ко всем пользователям Только админ
+      description: Позволяет администраторам получать список всех зарегистрированных пользователей.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен для аутентификации.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Список всех пользователей.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserDto'
+        '401':
+          description: Unauthorized. Token is invalid or missing.
+        '403':
+          description: Forbidden. The user is not an admin.
+        '500':
+          description: Internal server error.
+  /tasks:
+    post:
+      summary: Создание задачи
+      description: Создает новую задачу, используя предоставленные данные. Требуется проверка подлинности.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен для аутентификации.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Подробные сведения о новой задаче, которая будет создана.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTaskDto'
+      responses:
+        '201':
+          description: Задача успешно создана.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '400':
+          description: Invalid input data.
+        '401':
+          description: Unauthorized. Token is invalid or missing.
+        '500':
+          description: Internal server error.
+          
+components:
+  schemas:
+    NewUserDto:
+      type: object
+      required:
+        - username
+        - password
+        - email
+      properties:
+        username:
+          type: string
+          description: Имя пользователя.
+          example: Anna
+        password:
+          type: string
+          format: password
+          description: Пароль.
+          example: 12345
+        email:
+          type: string
+          format: email
+          description: Уникальный email.
+          example: anna@yandex.ru
+    UserDtoJwt:
+      type: object
+      properties:
+        jwtToken:
+          type: string
+          description: Токен JWT, выданный для пользователя.
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор пользователя.
+        name:
+          type: string
+          description: Имя пользователя.
+        email:
+          type: string
+          format: email
+          description: Уникальный email пользователя.
+        role:
+          type: string
+          description: Роль пользователя (User, Admin).
+    NewTaskDto:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        taskHeader:
+          type: string
+          description: Название задачи.
+        description:
+          type: string
+          description: Подробное описание задачи.
+        priorityStatus:
+          type: string
+          description: Приоритет задачи (HIGH, MEDIUM, LOW).
+    TaskDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор задачи.
+        taskHeader:
+          type: string
+          description: Название задачи.
+        description:
+          type: string
+          description: Подробное описание задачи.
+        author:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор автора задачи.
+        executor:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор исполнителя задачи.
+        statusTask:
+          type: string
+          description: Статус задачи.(PENDING, IN_PROGRESS, COMPLETED).
+        priorityStatus:
+          type: string
+          description: Приоритет задачи (HIGH, MEDIUM, LOW).
+        commentDtoList:
+          type: array
+          description: Список комментариев, связанных с заданием.
+          items:
+            $ref: '#/components/schemas/ResponseCommentDto'
+    ResponseCommentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор комментария.
+        description:
+          type: string
+          description: Текст комментария.
+        taskId:
+          type: integer
+          format: int64
+          description: Идентификатор задачи.
+        authorId:
+          type: integer
+          format: int64
+          description: Идентификатор автора комментария.
+  
+    
