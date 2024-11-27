@@ -28,7 +28,7 @@ public interface TaskService {
 
     List<TaskDto> getAllTaskByExecutorIdAndStatusAndPagination(String token, String status, Integer page, Integer size);
 
-    List<TaskDto> getAllTasksOnlyAdmin();
+    List<TaskDto> getAllTasks();
 
     void deleteTaskById(String token, Long taskId);
 }
