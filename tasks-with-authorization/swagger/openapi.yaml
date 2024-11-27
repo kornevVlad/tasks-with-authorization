@@ -3,6 +3,29 @@ info:
   title: Трекер Задач с авторизацией через Jwt
   version: 1.0.0
 paths:
+  /authentication:
+    post:
+      summary: Сгенерировать токен JWT
+      description: Аутентифицирует пользователя и генерирует токен JWT.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JwtRequest'
+      responses:
+        '200':
+          description: Токен JWT успешно создан.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JwtResponse'
+        '400':
+          description: Invalid request data or authentication failed.
+        '401':
+          description: Unauthorized access.
+      tags:
+        - Authentication
   /users:
     post:
       summary: Создание пользователя
@@ -24,6 +47,8 @@ paths:
           description: Bad request. Invalid input data.
         '500':
           description: Internal server error.
+      tags:
+        - User
   /update/{role}:
     patch:
       summary: Обновление статуса пользователя. Только админ
@@ -35,6 +60,9 @@ paths:
           description: Новая роль, назначаемая пользователю (USER, ADMIN).
           schema:
             type: string
+            enum:
+              - USER
+              - ADMIN
         - name: Task-User-Id
           in: header
           required: true
@@ -63,6 +91,8 @@ paths:
           description: User not found.
         '500':
           description: Internal server error.
+      tags:
+        - User
   /users/all:
     get:
       summary: Получить доступ ко всем пользователям Только админ
@@ -89,6 +119,8 @@ paths:
           description: Forbidden. The user is not an admin.
         '500':
           description: Internal server error.
+      tags:
+        - User
   /tasks:
     post:
       summary: Создание задачи
@@ -120,9 +152,578 @@ paths:
           description: Unauthorized. Token is invalid or missing.
         '500':
           description: Internal server error.
+      tags:
+        - Task
+        
+  /tasks/update/{taskId}:
+    patch:
+      summary: Обновить задачу
+      description: Обновляет задачу по id основе ее идентификатора.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен для аутентификации.
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          description: Уникальный идентификатор задачи для обновления.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        description: Сведения, которые необходимо обновить в задаче.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskDto'
+      responses:
+        '200':
+          description: Задача успешно обновлена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '400':
+          description: Invalid task ID or input data.
+        '401':
+          description: Unauthorized. Token is missing or invalid.
+        '404':
+          description: Task not found.
+        '500':
+          description: Internal server error.
+      tags:
+        - Task
+        
+  /tasks/update/{executorId}/{taskId}:
+    patch:
+      summary: Добавление исполнителя задачи
+      description: Обновляет идентификатор исполнителя определенной задачи.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен аутентификации.
+          schema:
+            type: string
+        - name: executorId
+          in: path
+          required: true
+          description: Уникальный идентификатор нового исполнителя.
+          schema:
+            type: integer
+            format: int64
+        - name: taskId
+          in: path
+          required: true
+          description: Уникальный идентификатор задачи для обновления.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Исполнитель задач успешно обновлен.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '400':
+          description: Invalid task or executor ID.
+        '401':
+          description: Unauthorized. Token is missing or invalid.
+        '404':
+          description: Task or executor not found.
+        '500':
+          description: Internal server error.
+      tags:
+        - Task
+        
+  /tasks/updateStatusTask/{statusTask}/{taskId}:
+    patch:
+      summary: Обновить статус задачи
+      description: Обновляет статус конкретной задачи.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен аутентификации..
+          schema:
+            type: string
+        - name: statusTask
+          in: path
+          required: true
+          description: Новый статус задачи.
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - IN_PROGRESS
+              - COMPLETED
+        - name: taskId
+          in: path
+          required: true
+          description: Уникальный идентификатор задачи для обновления.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Task status successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '400':
+          description: Invalid task ID or status.
+        '401':
+          description: Unauthorized. Token is missing or invalid.
+        '404':
+          description: Task not found.
+        '500':
+          description: Internal server error.
+      tags:
+        - Task
+        
+  /tasks/updatePriorityTask/{priorityStatus}/{taskId}:
+    patch:
+      summary: Обновление приоритета задачи
+      description: Обновляет приоритет задачи. Требуется проверка подлинности.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+        - name: priorityStatus
+          in: path
+          required: true
+          description: Новый приоритет для задачи.
+          schema:
+            type: string
+            enum:
+              - LOW
+              - MEDIUM
+              - HIGH
+        - name: taskId
+          in: path
+          required: true
+          description: Уникальный идентификатор для задачи.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Task priority successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '400':
+          description: Invalid priority or task ID.
+        '401':
+          description: Unauthorized access.
+        '404':
+          description: Task not found.
+        '500':
+          description: Internal server error.
+      tags:
+        - Task
+
+  /tasks/getId/{taskId}:
+    get:
+      summary: Получение задачи по ID
+      description: Извлекает подробную информацию о конкретной задаче по ее идентификатору.
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Task details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Task not found.
+      tags:
+        - Task
+
+  /tasks/allTaskByAuthorId:
+    get:
+      summary: Получить все задачи по идентификатору автора
+      description: Извлекает все задачи, созданные автором.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of tasks retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '401':
+          description: Unauthorized access.
+      tags:
+        - Task
+
+  /task/allTaskByAuthorIdAndStatusPagination:
+    get:
+      summary: Получение всех задач по идентификатору автора с разбивкой на страницы и фильтром статуса
+      description: Извлекает задачи, созданные автором, с дополнительным фильтром статуса и разбивкой по страницам.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+        - name: statusTask
+          in: query
+          required: false
+          description: Фильтр по статусу.
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - IN_PROGRESS
+              - COMPLETED
+        - name: size
+          in: query
+          required: false
+          description: Количество задач на странице.
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          description: Номер страницы для извлечения.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of tasks retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '401':
+          description: Unauthorized access.
+      tags:
+        - Task
+
+  /tasks/allTaskByExecutorId:
+    get:
+      summary: Получить все задачи по идентификатору исполнителя
+      description: Извлекает все задачи, назначенные прошедшему проверку подлинности исполнителю.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of tasks retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '401':
+          description: Unauthorized access.
+      tags:
+        - Task
+
+  /tasks/allTaskByExecutorIdAndStatusPagination:
+    get:
+      summary: Получите все задачи по идентификатору исполнителя с разбивкой на страницы и фильтром статуса
+      description: Извлекает задачи, назначенные исполнителю, с дополнительным фильтром состояния и разбивкой по страницам.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+        - name: statusTask
+          in: query
+          required: false
+          description: Фильтр задач по статусу.
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - IN_PROGRESS
+              - COMPLETED
+        - name: size
+          in: query
+          required: false
+          description: Количество задач на странице.
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          description: Номер страницы для извлечения.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of tasks retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '401':
+          description: Unauthorized access.
+      tags:
+        - Task
+
+  /tasks/all:
+    get:
+      summary: Получить все задачи
+      description: Извлекает все задачи.
+      responses:
+        '200':
+          description: List of tasks retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaskDto'
+        '401':
+          description: Unauthorized access.
+      tags:
+        - Task
+
+  /tasks/delete/{taskId}:
+    delete:
+      summary: Удаление задачи по ID
+      description: Удаляет конкретную задачу по ее идентификатору.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          description: Уникальный идентификатор удаляемой задачи.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Task successfully deleted.
+        '401':
+          description: Unauthorized access.
+        '404':
+          description: Task not found.
+      tags:
+        - Task
+          
+  /comments/{taskId}:
+    post:
+      summary: Создание комментария
+      description: Создает новый комментарий для конкретной задачи.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+        - name: taskId
+          in: path
+          required: true
+          description: Уникальный идентификатор Задачи.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCommentDto'
+      responses:
+        '200':
+          description: Comment created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCommentDto'
+        '400':
+          description: Invalid request data.
+        '401':
+          description: Unauthorized access.
+        '404':
+          description: Task not found.
+      tags:
+        - Comment
+
+  /comments/update/{commentId}:
+    patch:
+      summary: Обновление комментария
+      description: Обновляет существующий комментарий по его идентификатору.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+        - name: commentId
+          in: path
+          required: true
+          description: Уникальный идентификатор комментария для обновления.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCommentDto'
+      responses:
+        '200':
+          description: Comment updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseCommentDto'
+        '400':
+          description: Invalid request data.
+        '401':
+          description: Unauthorized access.
+        '404':
+          description: Comment not found.
+      tags:
+        - Comment
+
+  /comments/getCommentsByTaskId/{taskId}:
+    get:
+      summary: Получать все комментарии по идентификатору задачи
+      description: Извлекает все комментарии, связанные с конкретной задачей. Поддерживает разбивку на страницы.
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          description: Уникальный идентификатор задачи.
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          required: false
+          description: Номер страницы для разбивки на страницы.
+          schema:
+            type: integer
+        - name: size
+          in: query
+          required: false
+          description: Количество комментариев на странице для разбивки на страницы.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of comments retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseCommentDto'
+        '404':
+          description: Task not found.
+      tags:
+        - Comment
+
+  /comments/deleteComment/{commentId}:
+    delete:
+      summary: Удаление комментария
+      description: Удаляет определенный комментарий по его идентификатору.
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          description: Токен авторизации.
+          schema:
+            type: string
+        - name: commentId
+          in: path
+          required: true
+          description: Уникальный идентификатор комментария, который требуется удалить.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Comment deleted successfully.
+        '401':
+          description: Unauthorized access.
+        '404':
+          description: Comment not found.
+      tags:
+        - Comment
+          
+          
           
 components:
   schemas:
+    JwtRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: Адрес электронной почты пользователя.
+          example: "user@example.com"
+        password:
+          type: string
+          format: password
+          description: Пароль пользователя.
+          example: "securePassword123"
+      required:
+        - email
+        - password
+      description: DTO для аутентификации пользователя через JWT.
+    JwtResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Токен JWT, выданный после успешной аутентификации.
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNjIzMjk0MDAwfQ.sflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+      required:
+        - token
+      description: Для получения ответа JWT, содержащего токен аутентификации.
     NewUserDto:
       type: object
       required:
@@ -165,7 +766,7 @@ components:
           format: email
           description: Уникальный email пользователя.
         role:
-          type: string
+          $ref: '#/components/schemas/Role'
           description: Роль пользователя (User, Admin).
     NewTaskDto:
       type: object
@@ -180,8 +781,45 @@ components:
           type: string
           description: Подробное описание задачи.
         priorityStatus:
-          type: string
+          $ref: '#/components/schemas/PriorityStatus'
           description: Приоритет задачи (HIGH, MEDIUM, LOW).
+    UpdateTaskDto:
+      type: object
+      properties:
+        taskHeader:
+          type: string
+          description: Обновленный заголовок задачи.
+        description:
+          type: string
+          description: Обновление описания задачи.
+    ResponseCommentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор комментария.
+        description:
+          type: string
+          description: Текст комментария.
+        taskId:
+          type: integer
+          format: int64
+          description: Идентификатор задачи.
+        authorId:
+          type: integer
+          format: int64
+          description: Идентификатор автора комментария.
+    RequestCommentDto:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Описание или содержание комментария.
+          example: "Это описание комментария."
+      required:
+        - description
+      description: DTO для создания или обновления запроса на комментарий.
     TaskDto:
       type: object
       properties:
@@ -204,33 +842,35 @@ components:
           format: int64
           description: Уникальный идентификатор исполнителя задачи.
         statusTask:
-          type: string
+          $ref: '#/components/schemas/StatusTask'
           description: Статус задачи.(PENDING, IN_PROGRESS, COMPLETED).
         priorityStatus:
-          type: string
+          $ref: '#/components/schemas/PriorityStatus'
           description: Приоритет задачи (HIGH, MEDIUM, LOW).
         commentDtoList:
           type: array
           description: Список комментариев, связанных с заданием.
           items:
             $ref: '#/components/schemas/ResponseCommentDto'
-    ResponseCommentDto:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          description: Уникальный идентификатор комментария.
-        description:
-          type: string
-          description: Текст комментария.
-        taskId:
-          type: integer
-          format: int64
-          description: Идентификатор задачи.
-        authorId:
-          type: integer
-          format: int64
-          description: Идентификатор автора комментария.
+    StatusTask:
+      type: string
+      enum:
+        - PENDING
+        - IN_PROGRESS
+        - COMPLETED
+      description: Статус выполнения задачи.
+    PriorityStatus:
+      type: string
+      enum:
+        - LOW
+        - MEDIUM
+        - HIGH
+      description: Приоритет задачи.
+    Role:
+      type: string
+      enum:
+        - USER
+        - ADMIN
+      
   
     

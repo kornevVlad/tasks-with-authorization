@@ -87,8 +87,8 @@ public class TaskController {
     }
 
     @GetMapping("/all")
-    public List<TaskDto> getListTasksOnlyAdmin() {
-        return taskService.getAllTasksOnlyAdmin();
+    public List<TaskDto> getListTasks() {
+        return taskService.getAllTasks();
     }
 
     @DeleteMapping("/delete/{taskId}")

@@ -136,7 +136,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDto> getAllTasksOnlyAdmin() {
+    public List<TaskDto> getAllTasks() {
         return generateListTaskDto(taskRepository.findAll());
     }
 
