@@ -10,5 +10,4 @@ public class TasksWithAuthorizationApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TasksWithAuthorizationApplication.class, args);
 	}
-
 }
